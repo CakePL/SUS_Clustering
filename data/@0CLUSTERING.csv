@@ -459,8 +459,8 @@ Filename,Cluster
 1_257-402.png,o
 1_258-377.png,r
 1_259-253.png,X
-1_259-546.png,o
-1_259-596.png,g1
+1_259-546.png,O
+1_259-596.png,gl
 1_260-328.png,r
 1_260-750.png,o
 1_261-477.png,S
@@ -499,7 +499,7 @@ Filename,Cluster
 1_279-502.png,L1
 1_279-547.png,comma
 1_279-748.png,t
-1_280-422.png,a1
+1_280-422.png,al
 1_280-497.png,0PLAMY
 1_281-201.png,t
 1_281-323.png,L2
@@ -942,7 +942,7 @@ Filename,Cluster
 2_11-420.png,t
 2_11-491.png,h
 2_11-521.png,o
-2_11-541.png,g1
+2_11-541.png,gl
 2_11-595.png,p
 2_11-621.png,L1
 2_11-695.png,S
@@ -996,7 +996,7 @@ Filename,Cluster
 2_34-223.png,m
 2_34-292.png,An
 2_34-322.png,e
-2_34-466.png,o
+2_34-466.png,O
 2_34-590.png,0PLAMY
 2_34-640.png,H
 2_34-665.png,A
@@ -1061,7 +1061,7 @@ Filename,Cluster
 2_60-421.png,e
 2_60-466.png,D
 2_61-80.png,comma
-2_61-247.png,Wh
+2_61-247.png,wn
 2_61-347.png,L1
 2_61-769.png,o
 2_61-819.png,e
@@ -1183,7 +1183,7 @@ Filename,Cluster
 2_109-222.png,S
 2_109-272.png,m
 2_109-372.png,e
-2_109-615.png,g1
+2_109-615.png,gl
 2_110-519.png,t
 2_111-19.png,t
 2_111-172.png,as
@@ -1394,7 +1394,7 @@ Filename,Cluster
 2_190-242.png,d
 2_190-269.png,ts
 2_190-322.png,y
-2_191-16.png,o
+2_191-16.png,O
 2_192-794.png,w1
 2_193-220.png,t
 2_193-565.png,f
@@ -2327,7 +2327,7 @@ Filename,Cluster
 3_48-841.png,S
 3_49-88.png,F
 3_49-114.png,M
-3_50-612.png,o
+3_50-612.png,O
 3_50-711.png,Y
 3_51-43.png,a
 3_51-413.png,I
@@ -2429,7 +2429,7 @@ Filename,Cluster
 3_94-835.png,h
 3_95-93.png,e
 3_95-487.png,b
-3_95-562.png,a1
+3_95-562.png,al
 3_95-691.png,c
 3_96-641.png,a
 3_97-438.png,h
@@ -2485,7 +2485,7 @@ Filename,Cluster
 3_118-388.png,L2
 3_118-691.png,w
 3_119-327.png,comma
-3_119-760.png,c
+3_119-760.png,C
 3_119-841.png,u
 3_120-169.png,co
 3_120-193.png,e
@@ -2544,7 +2544,7 @@ Filename,Cluster
 3_139-614.png,t
 3_139-716.png,e
 3_141-319.png,u
-3_142-113.png,o
+3_142-113.png,O
 3_143-666.png,n
 3_144-169.png,m
 3_144-442.png,a
@@ -3416,7 +3416,7 @@ Filename,Cluster
 4_16-434.png,fin
 4_16-484.png,L2
 4_16-514.png,n
-4_17-33.png,g1
+4_17-33.png,gl
 4_17-64.png,p
 4_17-159.png,ki
 4_21-489.png,o
@@ -3907,7 +3907,7 @@ Filename,Cluster
 4_233-788.png,o
 4_234-463.png,a
 4_236-437.png,t
-4_236-533.png,o
+4_236-533.png,O
 4_236-613.png,r
 4_236-683.png,h
 4_236-758.png,d
@@ -3928,7 +3928,7 @@ Filename,Cluster
 4_242-90.png,w
 4_242-315.png,m
 4_242-837.png,a
-4_243-34.png,o
+4_243-34.png,O
 4_243-240.png,r
 4_243-335.png,b
 4_243-434.png,h
@@ -3969,7 +3969,7 @@ Filename,Cluster
 4_261-533.png,D
 4_261-588.png,L1
 4_262-34.png,n1
-4_262-59.png,o
+4_262-59.png,O
 4_262-489.png,m
 4_262-583.png,0PLAMY
 4_265-633.png,h
@@ -4355,7 +4355,7 @@ Filename,Cluster
 4_461-315.png,a
 4_461-763.png,L1
 4_462-757.png,0PLAMY
-4_463-235.png,o
+4_463-235.png,O
 4_463-489.png,w
 4_464-340.png,w1
 4_465-10.png,f
@@ -4809,7 +4809,7 @@ Filename,Cluster
 5_138-137.png,f
 5_138-217.png,y
 5_138-267.png,a
-5_138-286.png,o
+5_138-286.png,O
 5_138-317.png,m
 5_138-764.png,e
 5_139-187.png,0PLAMY
@@ -4911,7 +4911,7 @@ Filename,Cluster
 5_177-117.png,r
 5_177-242.png,a
 5_177-292.png,e
-5_178-565.png,Wh
+5_178-565.png,wn
 5_179-89.png,@no_match29
 5_179-167.png,o
 5_179-635.png,h
@@ -5662,7 +5662,7 @@ Filename,Cluster
 5_514-517.png,se
 5_514-537.png,0PLAMY
 5_514-592.png,se
-5_515-169.png,se
+5_515-169.png,us
 5_515-443.png,r
 5_516-193.png,e
 5_516-268.png,o
@@ -5881,7 +5881,7 @@ Filename,Cluster
 6_86-362.png,w
 6_87-86.png,r
 6_87-295.png,0PLAMY
-6_87-655.png,w
+6_87-655.png,W
 6_87-759.png,g
 6_88-209.png,t
 6_88-262.png,v
@@ -5911,7 +5911,7 @@ Filename,Cluster
 6_98-760.png,u
 6_99-282.png,Th
 6_99-485.png,e
-6_99-580.png,g1
+6_99-580.png,gl
 6_99-809.png,e
 6_100-231.png,0PLAMY
 6_100-262.png,e
@@ -6156,7 +6156,7 @@ Filename,Cluster
 6_206-131.png,d
 6_206-584.png,o
 6_206-610.png,e
-6_206-629.png,g1
+6_206-629.png,gl
 6_207-510.png,a
 6_207-559.png,S
 6_208-83.png,ti
@@ -6199,7 +6199,7 @@ Filename,Cluster
 6_226-808.png,pe
 6_227-281.png,d
 6_227-684.png,a
-6_227-704.png,g1
+6_227-704.png,gl
 6_228-5.png,L2
 6_228-312.png,L1
 6_228-833.png,e
@@ -6769,7 +6769,7 @@ Filename,Cluster
 6_505-236.png,L1
 6_506-230.png,0PLAMY
 6_507-280.png,h
-6_507-807.png,Wh
+6_507-807.png,wn
 6_508-85.png,S
 6_509-135.png,m
 6_510-210.png,n
@@ -6868,8 +6868,8 @@ Filename,Cluster
 7_27-487.png,a
 7_27-507.png,Th
 7_27-532.png,0PLAMY
-7_27-606.png,c
-7_27-631.png,o
+7_27-606.png,C
+7_27-631.png,O
 7_28-108.png,0PLAMY
 7_28-234.png,Th
 7_28-436.png,t
@@ -7012,7 +7012,7 @@ Filename,Cluster
 7_108-645.png,comma
 7_110-36.png,t
 7_110-114.png,y
-7_111-214.png,Wh
+7_111-214.png,wn
 7_111-314.png,n
 7_112-340.png,u
 7_112-359.png,h
@@ -7390,7 +7390,7 @@ Filename,Cluster
 7_342-360.png,L2
 7_347-14.png,n
 7_348-365.png,e
-7_351-235.png,w
+7_351-235.png,W
 7_351-633.png,d
 7_352-190.png,a
 7_353-414.png,a
@@ -7459,7 +7459,7 @@ Filename,Cluster
 7_401-514.png,r
 7_402-15.png,e
 7_403-390.png,n
-7_404-365.png,Wh
+7_404-365.png,wn
 7_405-341.png,u
 7_405-538.png,e
 7_406-215.png,S
