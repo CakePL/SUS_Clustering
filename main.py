@@ -25,9 +25,49 @@ from scipy.spatial.distance import pdist
 import optuna
 import time
 
+P = 2
+EPS = 2.21
 
-def automated_clustering(data) -> List[str]:
-    return ["None"]
+
+def automated_clustering(data) -> List[int]:
+    ic = io.imread_collection(data, conserve_memory=True)
+    df = pd.DataFrame(dtype=object)
+    df[0] = ic
+
+    df[0] = pd.DataFrame(df.apply(lambda row: skimage.color.rgb2gray(row[0]), axis=1))
+    max_sum = max(df.apply(lambda row: ndi.sum_labels(row[0]), axis=1))
+
+    def img_center(img):
+        cy, cx = ndi.center_of_mass(img)
+        cy = round(cy)
+        cx = round(cx)
+        sy, sx = img.shape
+        top = max(sy - 1 - cy - cy, 0)
+        bot = max(cy - (sy - 1 - cy), 0)
+        left = max(sx - 1 - cx - cx, 0)
+        right = max(cx - (sx - 1 - cx), 0)
+        return cv2.copyMakeBorder(img, top, bot, left, right, cv2.BORDER_CONSTANT, None, value=1.)
+
+    df[0] = df.apply(lambda row: img_center(row[0]), axis=1)
+
+    max_shape_y = max(df.apply(lambda row: row[0].shape[0], axis=1))
+    max_shape_x = max(df.apply(lambda row: row[0].shape[1], axis=1))
+
+    def img_equalize_size(img):
+        sy, sx = img.shape
+        top = (max_shape_y - sy) // 2
+        bot = (max_shape_y - sy + 1) // 2
+        left = (max_shape_x - sx) // 2
+        right = (max_shape_x - sx + 1) // 2
+        return cv2.copyMakeBorder(img, top, bot, left, right, cv2.BORDER_CONSTANT, None, value=1.)
+
+    df[0] = df.apply(lambda row: img_equalize_size(row[0]), axis=1)
+
+    df[0] = df.apply(lambda row: np.reshape(row[0], -1), axis=1)
+
+    _, labels = cluster.dbscan(list(df[0]), eps=EPS, min_samples=1, p=P)
+
+    return labels
 
 
 def randomize_file(n=5000):
