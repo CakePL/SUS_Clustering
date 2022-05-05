@@ -25,11 +25,15 @@ from scipy.spatial.distance import pdist
 import optuna
 import time
 
+import plotly.io as pio
+pio.renderers.default = "browser"
+
 P = 2
 EPS = 2.21
 
+
 def show_plot(data_x, y):
-    pca = PCA(n_components = 2)
+    pca = PCA(n_components=2)
     data2D = pca.fit_transform(data_x)
     print(f"nr of classes: {len(set(y))}")
     fig = px.scatter(x=data2D[:, 0], y=data2D[:, 1], color=[str(v) for v in y], width=900, height=600)
@@ -89,10 +93,8 @@ def automated_clustering(data) -> List[int]:
     imgs = list(df[0])
 
     _, labels = cluster.dbscan(imgs, eps=EPS, min_samples=1, p=P)
-
-    show_results(data, labels, imgs)
-
-    return labels
+    print(imgs)
+    return labels, imgs
 
 
 def randomize_file(n=5000):
@@ -116,7 +118,7 @@ def name(path):
     return os.path.basename(path)
 
 
-def make_clustering(data, manual=False):
+def make_clustering(data, manual=False, show_results=True):
     if manual:
         csv_filename = "data/@0CLUSTERING.csv"
         src = "./data/"
@@ -126,7 +128,9 @@ def make_clustering(data, manual=False):
         df.set_index("Filename", inplace=True)
         res = [df.loc[name(fl), "Cluster"] for fl in data]
     else:
-        res = automated_clustering(data)
+        res, imgs = automated_clustering(data)
+
+    # show_results(data, res, imgs)
     return res
 
 
