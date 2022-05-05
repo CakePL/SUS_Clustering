@@ -28,6 +28,27 @@ import time
 P = 2
 EPS = 2.21
 
+def show_plot(data_x, y):
+    pca = PCA(n_components = 2)
+    data2D = pca.fit_transform(data_x)
+    print(f"nr of classes: {len(set(y))}")
+    fig = px.scatter(x=data2D[:, 0], y=data2D[:, 1], color=[str(v) for v in y], width=900, height=600)
+    fig.show()
+
+
+def show_results(data, res):
+    correct = make_clustering(data, manual=True)
+    print("correct clustering")
+    show_plot(data, correct)
+    print("\n")
+    acc = metrics.adjusted_rand_score(correct, res)
+    print(f"found clustering")
+    print(f"eps: {EPS}")
+    print(f"p: {P}")
+    print(f"ACCURACY: {metrics.rand_score(correct, res)}")
+    print(f"BALANCE ACCURACY: {acc}")
+    show_plot(data, res)
+
 
 def automated_clustering(data) -> List[int]:
     ic = io.imread_collection(data, conserve_memory=True)
@@ -66,6 +87,8 @@ def automated_clustering(data) -> List[int]:
     df[0] = df.apply(lambda row: np.reshape(row[0], -1), axis=1)
 
     _, labels = cluster.dbscan(list(df[0]), eps=EPS, min_samples=1, p=P)
+
+    show_results(data, labels)
 
     return labels
 
