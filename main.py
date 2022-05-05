@@ -109,7 +109,7 @@ def randomize_file(n=5000):
 
 
 def inSRC(input_filename):
-    return list(pd.read_csv(input_filename, header=None)[0])
+    return list(pd.read_csv(input_filename, header=None, dtype=object)[0])
 
 
 def name(path):
@@ -172,14 +172,17 @@ def main():
     input_filename = sys.argv[1]
     print((input_filename))
     if input_filename == "random":
-        input_filename = randomize_file(10000)
+        input_filename = randomize_file(5000)
 
     data = inSRC(input_filename)
-    clustered = make_clustering(data, manual=True)
+    print("Begin clustering")
+    clustered = make_clustering(data, manual=False)
+    print("Generating output...", end="")
     res = [(data[i], clustered[i]) for i in range(len(data))]
     res = sorted(res, key=lambda x: x[1])
     outTXT(res)
     outHTML(res)
+    print("DONE!")
 
 
 if __name__ == "__main__":
