@@ -29,38 +29,42 @@ import plotly.io as pio
 
 pio.renderers.default = "browser"
 
-P = 2
-EPS = 2.21
+N = 5000
+P = np.inf
+EPS = 0.1
 
 
-# def show_plot(data_x, y):
-#    pca = PCA(n_components=2)
-#    data2D = pca.fit_transform(data_x)
-#    print(f"nr of classes: {len(set(y))}")
-#    fig = px.scatter(x=data2D[:, 0], y=data2D[:, 1], color=[str(v) for v in y], width=900, height=600)
-#    fig.show()
+def show_plot(data_x, y):
+     pca = PCA(n_components=2)
+     data2D = pca.fit_transform(data_x)
+     print(f"nr of classes: {len(set(y))}")
+     fig = px.scatter(x=data2D[:, 0], y=data2D[:, 1], color=[str(v) for v in y], width=900, height=600)
+     fig.show()
 
 
-# def show_results(data, res, imgs):
-#    correct = make_clustering(data, manual=True)
-#    print("correct clustering")
-#    show_plot(imgs, correct)
-#    print("\n")
-#    acc = metrics.adjusted_rand_score(correct, res)
-#    print(f"found clustering")
-#    print(f"eps: {EPS}")
-#    print(f"p: {P}")
-#    print(f"ACCURACY: {metrics.rand_score(correct, res)}")
-#    print(f"BALANCE ACCURACY: {acc}")
-#    show_plot(imgs, res)
+def show_results(data, res):
+    correct = make_clustering(data, manual=True)
+    print("correct clustering")
+    # show_plot(imgs, correct)
+    # print("\n")
+    df = pd.DataFrame(index=data.index, dtype=object)
+    df["correct"] = correct
+    df["labels"] = res
+    acc = metrics.adjusted_rand_score(df["correct"].to_list(), df["labels"].to_list())
+    #print(f"found clustering")
+    #print(f"eps: {EPS}")
+    #print(f"p: {P}")
+    print(f"ACCURACY: {metrics.rand_score(df['correct'].to_list(), df['labels'].to_list())}")
+    print(f"BALANCE ACCURACY: {acc}")
+    #show_plot(imgs, res)
 
 
 def automated_clustering(data):
-    ic = io.imread_collection(data.to_list(), conserve_memory=True)
+    # print(data.index)
+    ic = [io.imread(path) for path in data.to_list()]
     ser = pd.Series(ic, index=data.index, dtype=object)
 
     ser = ser.apply(skimage.color.rgb2gray)
-    max_sum = max(ser.apply(ndi.sum_labels))
 
     def img_center(img):
         cy, cx = ndi.center_of_mass(img)
@@ -94,7 +98,15 @@ def automated_clustering(data):
 
     _, labels = cluster.dbscan(imgs, eps=EPS, min_samples=1, p=P)
 
-    return pd.Series(labels, index=data.index)
+    # show_plot(imgs, labels)
+
+    res = pd.Series(labels, index=data.index)
+
+    res.sort_values(inplace=True)
+
+    #show_results(data, res)
+
+    return res
 
 
 def randomize_file(n=5000):
@@ -134,6 +146,7 @@ def make_clustering(data, manual=False, show_results=True):
         res = automated_clustering(data)
 
     # show_results(data, res, imgs)
+    print(res)
     return res
 
 
@@ -177,14 +190,20 @@ def outHTML(data, filename="res.html"):
 
 def main():
     input_filename = sys.argv[1]
-    print((input_filename))
+    print("Input filename: ", input_filename)
     if input_filename == "random":
-        input_filename = randomize_file(5000)
+        input_filename = randomize_file(N)
 
     data = inSRC(input_filename)
     print("Begin clustering")
-    data["clustering"] = make_clustering(data["path"], manual=False)
+    clustering = make_clustering(data["path"], manual=False)
+    assert(data is not None)
+    assert(clustering is not None)
+    assert set(data.index.to_list()) == set(clustering.index.to_list())
+    data["clustering"] = clustering
+    data["man_clustering"] = make_clustering(data["path"], manual=True)
     print("Generating output")
+    print(data)
     data.sort_values(by=["clustering"], inplace=True)
     outTXT(data)
     outHTML(data)

@@ -177,3 +177,5 @@ cython_debug/
 /rand_input.txt
 /res.txt
 /res.html
+*.pkl
+*.pickle
