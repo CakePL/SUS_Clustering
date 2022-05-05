@@ -32,35 +32,34 @@ P = 2
 EPS = 2.21
 
 
-def show_plot(data_x, y):
-    pca = PCA(n_components=2)
-    data2D = pca.fit_transform(data_x)
-    print(f"nr of classes: {len(set(y))}")
-    fig = px.scatter(x=data2D[:, 0], y=data2D[:, 1], color=[str(v) for v in y], width=900, height=600)
-    fig.show()
+#def show_plot(data_x, y):
+#    pca = PCA(n_components=2)
+#    data2D = pca.fit_transform(data_x)
+#    print(f"nr of classes: {len(set(y))}")
+#    fig = px.scatter(x=data2D[:, 0], y=data2D[:, 1], color=[str(v) for v in y], width=900, height=600)
+#    fig.show()
 
 
-def show_results(data, res, imgs):
-    correct = make_clustering(data, manual=True)
-    print("correct clustering")
-    show_plot(imgs, correct)
-    print("\n")
-    acc = metrics.adjusted_rand_score(correct, res)
-    print(f"found clustering")
-    print(f"eps: {EPS}")
-    print(f"p: {P}")
-    print(f"ACCURACY: {metrics.rand_score(correct, res)}")
-    print(f"BALANCE ACCURACY: {acc}")
-    show_plot(imgs, res)
+#def show_results(data, res, imgs):
+#    correct = make_clustering(data, manual=True)
+#    print("correct clustering")
+#    show_plot(imgs, correct)
+#    print("\n")
+#    acc = metrics.adjusted_rand_score(correct, res)
+#    print(f"found clustering")
+#    print(f"eps: {EPS}")
+#    print(f"p: {P}")
+#    print(f"ACCURACY: {metrics.rand_score(correct, res)}")
+#    print(f"BALANCE ACCURACY: {acc}")
+#    show_plot(imgs, res)
 
 
-def automated_clustering(data) -> List[int]:
-    ic = io.imread_collection(data, conserve_memory=True)
-    df = pd.DataFrame(dtype=object)
-    df[0] = ic
+def automated_clustering(data):
+    ic = io.imread_collection(data.to_list(), conserve_memory=True)
+    ser = pd.Series(ic, index=data.index, dtype=object)
 
-    df[0] = pd.DataFrame(df.apply(lambda row: skimage.color.rgb2gray(row[0]), axis=1))
-    max_sum = max(df.apply(lambda row: ndi.sum_labels(row[0]), axis=1))
+    ser = ser.apply(skimage.color.rgb2gray)
+    max_sum = max(ser.apply(ndi.sum_labels))
 
     def img_center(img):
         cy, cx = ndi.center_of_mass(img)
@@ -73,10 +72,10 @@ def automated_clustering(data) -> List[int]:
         right = max(cx - (sx - 1 - cx), 0)
         return cv2.copyMakeBorder(img, top, bot, left, right, cv2.BORDER_CONSTANT, None, value=1.)
 
-    df[0] = df.apply(lambda row: img_center(row[0]), axis=1)
+    ser = ser.apply(img_center)
 
-    max_shape_y = max(df.apply(lambda row: row[0].shape[0], axis=1))
-    max_shape_x = max(df.apply(lambda row: row[0].shape[1], axis=1))
+    max_shape_y = max(ser.apply(lambda x: x.shape[0]))
+    max_shape_x = max(ser.apply(lambda x: x.shape[1]))
 
     def img_equalize_size(img):
         sy, sx = img.shape
@@ -86,15 +85,15 @@ def automated_clustering(data) -> List[int]:
         right = (max_shape_x - sx + 1) // 2
         return cv2.copyMakeBorder(img, top, bot, left, right, cv2.BORDER_CONSTANT, None, value=1.)
 
-    df[0] = df.apply(lambda row: img_equalize_size(row[0]), axis=1)
+    ser = ser.apply(img_equalize_size)
 
-    df[0] = df.apply(lambda row: np.reshape(row[0], -1), axis=1)
+    ser = ser.apply(lambda x: np.reshape(x, -1))
 
-    imgs = list(df[0])
+    imgs = ser.to_list()
 
     _, labels = cluster.dbscan(imgs, eps=EPS, min_samples=1, p=P)
-    print(imgs)
-    return labels, imgs
+
+    return pd.Series(labels, index=data.index)
 
 
 def randomize_file(n=5000):
@@ -111,7 +110,10 @@ def randomize_file(n=5000):
 
 
 def inSRC(input_filename):
-    return list(pd.read_csv(input_filename, header=None, dtype=object)[0])
+    df = pd.read_csv(input_filename, header=None, dtype=object)
+    df.rename(columns={0: "path"}, inplace=True)
+    df.index = df.apply(lambda row: name(row["path"]), axis=1)
+    return df
 
 
 def name(path):
@@ -126,9 +128,9 @@ def make_clustering(data, manual=False, show_results=True):
 
         df = pd.read_csv(csv_filename)
         df.set_index("Filename", inplace=True)
-        res = [df.loc[name(fl), "Cluster"] for fl in data]
+        res = df.loc[data.index, "Cluster"]
     else:
-        res, imgs = automated_clustering(data)
+        res = automated_clustering(data)
 
     # show_results(data, res, imgs)
     return res
@@ -136,12 +138,12 @@ def make_clustering(data, manual=False, show_results=True):
 
 def outTXT(data, filename="res.txt"):
     with open(filename, "w") as res_file:
-        act = data[0][1]
-        for d in data:
-            if d[1] != act:
+        act = data.iloc[0, 1]
+        for index, d in data.iterrows:
+            if d.loc["clustering"] != act:
                 res_file.write("\n")
-                act = d[1]
-            res_file.write(name(d[0]) + " ")
+                act = d.loc["clustering"]
+            res_file.write(index + " ")
 
 
 def outHTML(data, filename="res.html"):
@@ -160,13 +162,13 @@ def outHTML(data, filename="res.html"):
 
     clustering = []
     clust = []
-    act = data[0][1]
-    for d in data:
-        if d[1] != act:
-            act = d[1]
+    act = data.iloc[0, 1]
+    for index, d in data:
+        if d.loc["clustering"] != act:
+            act = d.loc["clustering"]
             clustering.append(" ".join(clust))
             clust = []
-        clust.append(IMG % d[0])
+        clust.append(IMG % d.loc["path"])
     final_html = HTML % "\n<hr />\n".join(clustering)
     with open(filename, "w") as res_file:
         res_file.write(final_html)
@@ -180,12 +182,10 @@ def main():
 
     data = inSRC(input_filename)
     print("Begin clustering")
-    clustered = make_clustering(data, manual=False)
+    data["clustering"] = make_clustering(data["path"], manual=False)
     print("Generating output...", end="")
-    res = [(data[i], clustered[i]) for i in range(len(data))]
-    res = sorted(res, key=lambda x: x[1])
-    outTXT(res)
-    outHTML(res)
+    outTXT(data)
+    outHTML(data)
     print("DONE!")
 
 
