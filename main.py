@@ -147,7 +147,7 @@ def main():
     input_filename = sys.argv[1]
     print((input_filename))
     if input_filename == "random":
-        input_filename = randomize_file(7000)
+        input_filename = randomize_file(10000)
 
     data = inSRC(input_filename)
     clustered = make_clustering(data, manual=True)
