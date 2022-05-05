@@ -36,10 +36,10 @@ def show_plot(data_x, y):
     fig.show()
 
 
-def show_results(data, res):
+def show_results(data, res, imgs):
     correct = make_clustering(data, manual=True)
     print("correct clustering")
-    show_plot(data, correct)
+    show_plot(imgs, correct)
     print("\n")
     acc = metrics.adjusted_rand_score(correct, res)
     print(f"found clustering")
@@ -47,7 +47,7 @@ def show_results(data, res):
     print(f"p: {P}")
     print(f"ACCURACY: {metrics.rand_score(correct, res)}")
     print(f"BALANCE ACCURACY: {acc}")
-    show_plot(data, res)
+    show_plot(imgs, res)
 
 
 def automated_clustering(data) -> List[int]:
@@ -86,9 +86,11 @@ def automated_clustering(data) -> List[int]:
 
     df[0] = df.apply(lambda row: np.reshape(row[0], -1), axis=1)
 
-    _, labels = cluster.dbscan(list(df[0]), eps=EPS, min_samples=1, p=P)
+    imgs = list(df[0])
 
-    show_results(data, labels)
+    _, labels = cluster.dbscan(imgs, eps=EPS, min_samples=1, p=P)
+
+    show_results(data, labels, imgs)
 
     return labels
 
