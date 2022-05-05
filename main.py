@@ -26,13 +26,14 @@ import optuna
 import time
 
 import plotly.io as pio
+
 pio.renderers.default = "browser"
 
 P = 2
 EPS = 2.21
 
 
-#def show_plot(data_x, y):
+# def show_plot(data_x, y):
 #    pca = PCA(n_components=2)
 #    data2D = pca.fit_transform(data_x)
 #    print(f"nr of classes: {len(set(y))}")
@@ -40,7 +41,7 @@ EPS = 2.21
 #    fig.show()
 
 
-#def show_results(data, res, imgs):
+# def show_results(data, res, imgs):
 #    correct = make_clustering(data, manual=True)
 #    print("correct clustering")
 #    show_plot(imgs, correct)
@@ -139,11 +140,11 @@ def make_clustering(data, manual=False, show_results=True):
 def outTXT(data, filename="res.txt"):
     with open(filename, "w") as res_file:
         act = data.iloc[0, 1]
-        for index, d in data.iterrows:
+        for ind, d in data.iterrows():
             if d.loc["clustering"] != act:
                 res_file.write("\n")
                 act = d.loc["clustering"]
-            res_file.write(index + " ")
+            res_file.write(ind + " ")
 
 
 def outHTML(data, filename="res.html"):
@@ -163,7 +164,7 @@ def outHTML(data, filename="res.html"):
     clustering = []
     clust = []
     act = data.iloc[0, 1]
-    for index, d in data:
+    for _, d in data.iterrows():
         if d.loc["clustering"] != act:
             act = d.loc["clustering"]
             clustering.append(" ".join(clust))
@@ -183,7 +184,8 @@ def main():
     data = inSRC(input_filename)
     print("Begin clustering")
     data["clustering"] = make_clustering(data["path"], manual=False)
-    print("Generating output...", end="")
+    print("Generating output")
+    data.sort_values(by=["clustering"], inplace=True)
     outTXT(data)
     outHTML(data)
     print("DONE!")
