@@ -19,7 +19,7 @@ Then to run application, simply type:
 ```
 python3 cluster.py [filename]
 ```
-As  `[filename]` you have to provide path to file with unclastered paths to images. This images will be clustered.
+As  `[filename]` you have to provide path to file with paths to unclastered images. This images will be clustered then.
 <br />
 You can also launch test run, by executing:
 ```
