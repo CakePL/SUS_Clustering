@@ -2,111 +2,89 @@ import sys
 import os
 import fnmatch
 import random
-from typing import List
 
-import skimage
-import skimage.io as io
+from skimage import io
 import scipy.ndimage as ndi
 import pandas as pd
 import numpy as np
-import matplotlib.pyplot as plt
-import plotly.express as px
-from sklearn.decomposition import PCA
+import plotly.express as px  # ONLY FOT TEST!
+from sklearn.decomposition import PCA  # ONLY FOT TEST!
 from sklearn import cluster
-from sklearn import metrics
-from scipy.optimize import minimize_scalar
 import cv2
-from sklearn.model_selection import train_test_split
-from sklearn.metrics import pairwise_distances
-from scipy.spatial.distance import squareform
-
-from scipy.spatial.distance import pdist
-
-import optuna
+import plotly.io as pio  # ONLY FOT TEST!
 import time
-
-import plotly.io as pio
+from skimage.color import rgb2gray
 
 pio.renderers.default = "browser"
 
+TXT_RESULTS_FILENAME = "results.txt"
+HTML_RESULTS_FILENAME = "results.html"
+
 N = 5000
-P = np.inf
-EPS = 0.1
+P = 2
+EPS = 2.21
 
 
-def show_plot(data_x, y):
-     pca = PCA(n_components=2)
-     data2D = pca.fit_transform(data_x)
-     print(f"nr of classes: {len(set(y))}")
-     fig = px.scatter(x=data2D[:, 0], y=data2D[:, 1], color=[str(v) for v in y], width=900, height=600)
-     fig.show()
+def info(*args, **kwargs):
+    print(*args, file=sys.stderr, **kwargs)
 
 
-def show_results(data, res):
-    correct = make_clustering(data, manual=True)
-    print("correct clustering")
-    # show_plot(imgs, correct)
-    # print("\n")
-    df = pd.DataFrame(index=data.index, dtype=object)
-    df["correct"] = correct
-    df["labels"] = res
-    acc = metrics.adjusted_rand_score(df["correct"].to_list(), df["labels"].to_list())
-    #print(f"found clustering")
-    #print(f"eps: {EPS}")
-    #print(f"p: {P}")
-    print(f"ACCURACY: {metrics.rand_score(df['correct'].to_list(), df['labels'].to_list())}")
-    print(f"BALANCE ACCURACY: {acc}")
-    #show_plot(imgs, res)
+def show_plot(data_x, y):  # ONLY FOT TEST!
+    pca = PCA(n_components=2)
+    data2D = pca.fit_transform(data_x)
+    info(f"nr of classes: {len(set(y))}")
+    fig = px.scatter(x=data2D[:, 0], y=data2D[:, 1], color=[str(v) for v in y], width=900, height=600)
+    fig.show()
 
 
-def automated_clustering(data):
-    # print(data.index)
-    ic = [io.imread(path) for path in data.to_list()]
-    ser = pd.Series(ic, index=data.index, dtype=object)
+def img_center(img):
+    cy, cx = ndi.center_of_mass(img)
+    cy = round(cy)
+    cx = round(cx)
+    sy, sx = img.shape
+    top = max(sy - 1 - cy - cy, 0)
+    bot = max(cy - (sy - 1 - cy), 0)
+    left = max(sx - 1 - cx - cx, 0)
+    right = max(cx - (sx - 1 - cx), 0)
+    return cv2.copyMakeBorder(img, top, bot, left, right, cv2.BORDER_CONSTANT, None, value=1.)
 
-    ser = ser.apply(skimage.color.rgb2gray)
 
-    def img_center(img):
-        cy, cx = ndi.center_of_mass(img)
-        cy = round(cy)
-        cx = round(cx)
-        sy, sx = img.shape
-        top = max(sy - 1 - cy - cy, 0)
-        bot = max(cy - (sy - 1 - cy), 0)
-        left = max(sx - 1 - cx - cx, 0)
-        right = max(cx - (sx - 1 - cx), 0)
-        return cv2.copyMakeBorder(img, top, bot, left, right, cv2.BORDER_CONSTANT, None, value=1.)
+def img_equalize_size(img, max_shape_x, max_shape_y):
+    sy, sx = img.shape
+    top = (max_shape_y - sy) // 2
+    bot = (max_shape_y - sy + 1) // 2
+    left = (max_shape_x - sx) // 2
+    right = (max_shape_x - sx + 1) // 2
+    return cv2.copyMakeBorder(img, top, bot, left, right, cv2.BORDER_CONSTANT, None, value=1.)
 
-    ser = ser.apply(img_center)
 
-    max_shape_y = max(ser.apply(lambda x: x.shape[0]))
-    max_shape_x = max(ser.apply(lambda x: x.shape[1]))
+def preprocess_imgs(imgs):
+    imgs = imgs.apply(rgb2gray)
+    imgs = imgs.apply(img_center)
+    max_shape_y = max(imgs.apply(lambda x: x.shape[0]))
+    max_shape_x = max(imgs.apply(lambda x: x.shape[1]))
+    imgs = imgs.apply(lambda img: img_equalize_size(img, max_shape_x, max_shape_y))
+    imgs = imgs.apply(lambda x: np.reshape(x, -1))
+    return imgs
 
-    def img_equalize_size(img):
-        sy, sx = img.shape
-        top = (max_shape_y - sy) // 2
-        bot = (max_shape_y - sy + 1) // 2
-        left = (max_shape_x - sx) // 2
-        right = (max_shape_x - sx + 1) // 2
-        return cv2.copyMakeBorder(img, top, bot, left, right, cv2.BORDER_CONSTANT, None, value=1.)
 
-    ser = ser.apply(img_equalize_size)
+def make_clustering(data, show_results=True):
+    info("Loading data...")
+    imgs = pd.Series([io.imread(path) for path in data.to_list()], index=data.index, dtype=object)
+    info("Data loaded")
 
-    ser = ser.apply(lambda x: np.reshape(x, -1))
+    info("Preprocessing images...")
+    imgs = preprocess_imgs(imgs)
+    info("Images preprocessed")
 
-    imgs = ser.to_list()
+    info("Clustering...")
+    _, labels = cluster.dbscan(imgs.to_list(), eps=EPS, min_samples=1, p=P)
+    info("Clustering finished")
 
-    _, labels = cluster.dbscan(imgs, eps=EPS, min_samples=1, p=P)
+    if show_results:
+        show_plot(imgs.to_list(), labels)
 
-    # show_plot(imgs, labels)
-
-    res = pd.Series(labels, index=data.index)
-
-    res.sort_values(inplace=True)
-
-    #show_results(data, res)
-
-    return res
+    return pd.Series(labels, index=data.index, name="clustering")
 
 
 def randomize_file(n=5000):
@@ -133,25 +111,8 @@ def name(path):
     return os.path.basename(path)
 
 
-def make_clustering(data, manual=False, show_results=True):
-    if manual:
-        csv_filename = "data/@0CLUSTERING.csv"
-        src = "./data/"
-        # data = ['7_517-141.png', '7_517-266.png', '7_517-395.png', '7_519-40.png', '7_519-514.png', '7_522-189.png']
-
-        df = pd.read_csv(csv_filename)
-        df.set_index("Filename", inplace=True)
-        res = df.loc[data.index, "Cluster"]
-    else:
-        res = automated_clustering(data)
-
-    # show_results(data, res, imgs)
-    print(res)
-    return res
-
-
-def outTXT(data, filename="res.txt"):
-    with open(filename, "w") as res_file:
+def outTXT(data):
+    with open(TXT_RESULTS_FILENAME, "w") as res_file:
         act = data.iloc[0, 1]
         for ind, d in data.iterrows():
             if d.loc["clustering"] != act:
@@ -160,7 +121,7 @@ def outTXT(data, filename="res.txt"):
             res_file.write(ind + " ")
 
 
-def outHTML(data, filename="res.html"):
+def outHTML(data):
     HTML = '''
     <!DOCTYPE html>
     <html>
@@ -184,30 +145,30 @@ def outHTML(data, filename="res.html"):
             clust = []
         clust.append(IMG % d.loc["path"])
     final_html = HTML % "\n<hr />\n".join(clustering)
-    with open(filename, "w") as res_file:
+    with open(HTML_RESULTS_FILENAME, "w") as res_file:
         res_file.write(final_html)
 
 
 def main():
+    start = time.time() #ONLY FOT TEST!
     input_filename = sys.argv[1]
-    print("Input filename: ", input_filename)
+    info("Input filename: ", input_filename)
     if input_filename == "random":
         input_filename = randomize_file(N)
 
     data = inSRC(input_filename)
-    print("Begin clustering")
-    clustering = make_clustering(data["path"], manual=False)
-    assert(data is not None)
-    assert(clustering is not None)
-    assert set(data.index.to_list()) == set(clustering.index.to_list())
-    data["clustering"] = clustering
-    data["man_clustering"] = make_clustering(data["path"], manual=True)
-    print("Generating output")
-    print(data)
+    data["clustering"] = make_clustering(data["path"], show_results=False)
+    info("Generating output...")
     data.sort_values(by=["clustering"], inplace=True)
     outTXT(data)
     outHTML(data)
-    print("DONE!")
+    info("Output generating finished")
+    info(f"Text results saved to file {TXT_RESULTS_FILENAME}")
+    info(f"HTML results saved to file {HTML_RESULTS_FILENAME}")
+    info("Done!")
+    stop = time.time() #ONLY FOT TEST!
+    info(f"time: {stop - start}") #ONLY FOT TEST!
+
 
 
 if __name__ == "__main__":
