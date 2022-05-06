@@ -74,7 +74,7 @@ def make_clustering(data):
 
 
 def randomize_file(n=5000):
-    src = "./data/"
+    src = "preprocessing/data/"
     data = fnmatch.filter(os.listdir(src), '*.png')
     data = [src + data[i] for i in range(len(data))]
     random.shuffle(data)
