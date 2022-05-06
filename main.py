@@ -15,10 +15,12 @@ import plotly.io as pio  # ONLY FOT TEST!
 import time
 from skimage.color import rgb2gray
 
-pio.renderers.default = "browser"
+pio.renderers.default = "browser"  # ONLY FOT TEST!
 
 TXT_RESULTS_FILENAME = "results.txt"
 HTML_RESULTS_FILENAME = "results.html"
+SHOW_RESULTS = True
+DIAGNOSTIC_INFO = True
 
 N = 5000
 P = 2
@@ -26,7 +28,8 @@ EPS = 2.21
 
 
 def info(*args, **kwargs):
-    print(*args, file=sys.stderr, **kwargs)
+    if DIAGNOSTIC_INFO:
+        print(*args, file=sys.stderr, **kwargs)
 
 
 def show_plot(data_x, y):  # ONLY FOT TEST!
@@ -38,24 +41,24 @@ def show_plot(data_x, y):  # ONLY FOT TEST!
 
 
 def img_center(img):
-    cy, cx = ndi.center_of_mass(img)
-    cy = round(cy)
-    cx = round(cx)
-    sy, sx = img.shape
-    top = max(sy - 1 - cy - cy, 0)
-    bot = max(cy - (sy - 1 - cy), 0)
-    left = max(sx - 1 - cx - cx, 0)
-    right = max(cx - (sx - 1 - cx), 0)
-    return cv2.copyMakeBorder(img, top, bot, left, right, cv2.BORDER_CONSTANT, None, value=1.)
+    center_y, center_x = ndi.center_of_mass(img)
+    center_y = round(center_y)
+    center_x = round(center_x)
+    shape_y, shape_x = img.shape
+    top_pad = max((shape_y - 1 - center_y) - center_y, 0)
+    bot_pad = max(center_y - (shape_y - 1 - center_y), 0)
+    left_pad = max((shape_x - 1 - center_x) - center_x, 0)
+    right_pad = max(center_x - (shape_x - 1 - center_x), 0)
+    return cv2.copyMakeBorder(img, top_pad, bot_pad, left_pad, right_pad, cv2.BORDER_CONSTANT, None, value=1.)
 
 
 def img_equalize_size(img, max_shape_x, max_shape_y):
-    sy, sx = img.shape
-    top = (max_shape_y - sy) // 2
-    bot = (max_shape_y - sy + 1) // 2
-    left = (max_shape_x - sx) // 2
-    right = (max_shape_x - sx + 1) // 2
-    return cv2.copyMakeBorder(img, top, bot, left, right, cv2.BORDER_CONSTANT, None, value=1.)
+    shape_y, shape_x = img.shape
+    top_pad = (max_shape_y - shape_y) // 2
+    bot_pad = (max_shape_y - shape_y + 1) // 2
+    left_pad = (max_shape_x - shape_x) // 2
+    right_pad = (max_shape_x - shape_x + 1) // 2
+    return cv2.copyMakeBorder(img, top_pad, bot_pad, left_pad, right_pad, cv2.BORDER_CONSTANT, None, value=1.)
 
 
 def preprocess_imgs(imgs):
@@ -68,7 +71,7 @@ def preprocess_imgs(imgs):
     return imgs
 
 
-def make_clustering(data, show_results=True):
+def make_clustering(data):
     info("Loading data...")
     imgs = pd.Series([io.imread(path) for path in data.to_list()], index=data.index, dtype=object)
     info("Data loaded")
@@ -81,7 +84,7 @@ def make_clustering(data, show_results=True):
     _, labels = cluster.dbscan(imgs.to_list(), eps=EPS, min_samples=1, p=P)
     info("Clustering finished")
 
-    if show_results:
+    if SHOW_RESULTS:
         show_plot(imgs.to_list(), labels)
 
     return pd.Series(labels, index=data.index, name="clustering")
@@ -150,14 +153,14 @@ def outHTML(data):
 
 
 def main():
-    start = time.time() #ONLY FOT TEST!
+    start = time.time()  # ONLY FOT TEST!
     input_filename = sys.argv[1]
     info("Input filename: ", input_filename)
     if input_filename == "random":
         input_filename = randomize_file(N)
 
     data = inSRC(input_filename)
-    data["clustering"] = make_clustering(data["path"], show_results=False)
+    data["clustering"] = make_clustering(data["path"])
     info("Generating output...")
     data.sort_values(by=["clustering"], inplace=True)
     outTXT(data)
@@ -166,9 +169,8 @@ def main():
     info(f"Text results saved to file {TXT_RESULTS_FILENAME}")
     info(f"HTML results saved to file {HTML_RESULTS_FILENAME}")
     info("Done!")
-    stop = time.time() #ONLY FOT TEST!
-    info(f"time: {stop - start}") #ONLY FOT TEST!
-
+    stop = time.time()  # ONLY FOT TEST!
+    info(f"time: {stop - start}")  # ONLY FOT TEST!
 
 
 if __name__ == "__main__":

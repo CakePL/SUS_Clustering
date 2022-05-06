@@ -179,3 +179,5 @@ cython_debug/
 /res.html
 *.pkl
 *.pickle
+/results.html
+/results.txt
