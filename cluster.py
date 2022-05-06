@@ -17,7 +17,7 @@ HTML_RESULTS_FILENAME = "results.html"
 DIAGNOSTIC_INFO = True
 
 N = 5000
-P = 2
+P = 2.01
 EPS = 2.21
 
 
@@ -27,7 +27,7 @@ def info(*args, **kwargs):
 
 
 def img_center(img):
-    center_y, center_x = ndi.center_of_mass(img)
+    center_y, center_x = ndi.center_of_mass(1 - img)
     center_y = round(center_y)
     center_x = round(center_x)
     shape_y, shape_x = img.shape
