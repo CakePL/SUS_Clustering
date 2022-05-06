@@ -17,8 +17,8 @@ HTML_RESULTS_FILENAME = "results.html"
 DIAGNOSTIC_INFO = True
 
 N = 5000
-P = 2.01
-EPS = 2.21
+P = 3.54941880103127
+EPS = 1.0668941233212608
 
 
 def info(*args, **kwargs):
