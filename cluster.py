@@ -7,19 +7,13 @@ from skimage import io
 import scipy.ndimage as ndi
 import pandas as pd
 import numpy as np
-import plotly.express as px  # ONLY FOT TEST!
-from sklearn.decomposition import PCA  # ONLY FOT TEST!
 from sklearn import cluster
 import cv2
-import plotly.io as pio  # ONLY FOT TEST!
 import time
 from skimage.color import rgb2gray
 
-pio.renderers.default = "browser"  # ONLY FOT TEST!
-
 TXT_RESULTS_FILENAME = "results.txt"
 HTML_RESULTS_FILENAME = "results.html"
-SHOW_RESULTS = True
 DIAGNOSTIC_INFO = True
 
 N = 5000
@@ -30,14 +24,6 @@ EPS = 2.21
 def info(*args, **kwargs):
     if DIAGNOSTIC_INFO:
         print(*args, file=sys.stderr, **kwargs)
-
-
-def show_plot(data_x, y):  # ONLY FOT TEST!
-    pca = PCA(n_components=2)
-    data2D = pca.fit_transform(data_x)
-    info(f"nr of classes: {len(set(y))}")
-    fig = px.scatter(x=data2D[:, 0], y=data2D[:, 1], color=[str(v) for v in y], width=900, height=600)
-    fig.show()
 
 
 def img_center(img):
@@ -84,14 +70,11 @@ def make_clustering(data):
     _, labels = cluster.dbscan(imgs.to_list(), eps=EPS, min_samples=1, p=P)
     info("Clustering finished")
 
-    if SHOW_RESULTS:
-        show_plot(imgs.to_list(), labels)
-
     return pd.Series(labels, index=data.index, name="clustering")
 
 
 def randomize_file(n=5000):
-    src = "./data/"
+    src = "preprocessing/data/"
     data = fnmatch.filter(os.listdir(src), '*.png')
     data = [src + data[i] for i in range(len(data))]
     random.shuffle(data)

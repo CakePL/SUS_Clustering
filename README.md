@@ -32,3 +32,10 @@ As an output 2 files are generated:
 1. `result.txt` - file of clustered results - in each line there will be filenames, which includes in single cluster.
 2. `result.html` - file of clustered images. Every cluster will be separated by a single line (_it is __not__ suggested to open results using Google Chrome due to opening problems_).
 
+## File structure description
+Project directory contains much more than just simple clustering program. Here is a description of additional stuff:
+1. `requirements.txt` - this file contains all requirements needed to run the `cluster.py` app.
+2. `data/` - directory contains training data set.
+3. `data/@0CLUSTERING.csv` - file contains manual clustering of whole training data set. This file is used to validate models in training process.
+4. `preprocessing/Clustering.ipynb` - main jupyter notebook used to train and validate clustering model. Brief description of this process below.
+5. `preprocessing/clustering.db` - database handling optuna studies for multithread processing
