@@ -13,8 +13,9 @@ Project directory contains much more than just simple clustering program. Here i
 4. `optimization/Clustering.ipynb` - jupyter notebook containing __all__ commands invoked during hiperparameter optimization process and results
 5. `optimization/clustering.db` - database handling multithread processing
 6. `optimization/plots/` - directory contains visualization of optimization process
-7. `install.sh` - script creates virtual environment and installs libraries
-8. `requirements.txt` - this file contains all requirements needed to run the `cluster.py` app.
+7. `optimization/logs/` - directory contains logs from optimization process
+8. `install.sh` - script creates virtual environment and installs libraries
+9. `requirements.txt` - this file contains all requirements needed to run the `cluster.py` app.
 
 ## Installation
 
@@ -113,7 +114,8 @@ In other words:
 > 2. Take EPS that allows us to get the highest average score of clustering of __randomly chosen 5000-element subset__ with Q fixed on value from previous step.
 
 You can see optimization plots of step 1. and step 2. in files
-`optimization/plots/optimization_q.html` and `optimization/plots/optimization_eps.html` respectively.
+`optimization/plots/optimization_q.html` and `optimization/plots/optimization_eps.html` respectively.\
+You can also see Optuna logs from these steps in files `optimization/logs/optimization_q.log` and `optimization/logs/optimization_eps.log`
 
 Someone may be surprised that we evaluate value of Q on the entire dataset, but value of EPS on randomly chosen 5000-element subsets.\
 The reason for this is:\
