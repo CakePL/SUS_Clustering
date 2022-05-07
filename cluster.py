@@ -135,16 +135,6 @@ def outHTML(data):
         res_file.write(final_html)
 
 
-def time_mins(secs):
-    mins = secs / 60
-    secs = int(secs) % 60
-    if mins < 10:
-        mins = "0" + str(secs)
-    if secs < 10:
-        secs = "0" + str(secs)
-    return f"{mins}:{secs}"
-
-
 def main():
     input_filename = sys.argv[1]
     info("Input filename: ", input_filename)
@@ -155,14 +145,14 @@ def main():
     data["clustering"] = make_clustering(data["path"])
     info("Generating output...")
     data.sort_values(by=["clustering"], inplace=True)
+    info("Output generating...")
     outTXT(data)
-    outHTML(data)
-    info("Output generating finished")
     info(f"Text results saved to file {TXT_RESULTS_FILENAME}")
+    outHTML(data)
     info(f"HTML results saved to file {HTML_RESULTS_FILENAME}")
     info("Done!")
     stop = time.time()
-    info(f"Computing time: {time_mins(stop - start)} [min]")
+    info(f"Computing time: {round(stop - start, 2)} [sec]")
 
 
 if __name__ == "__main__":
