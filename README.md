@@ -1,5 +1,6 @@
 # SUS Clustering application
-This is an application (blah blah blah)
+_Application for clustering sets of letters (stored as images). Model training using multithread optuna optimization._
+<br /> © Mateusz Boruń 
 ## Installation
 To install application (on Unix OS):
 1. Some prerequisites are required (unless install script won't work properly):
@@ -40,7 +41,7 @@ Project directory contains much more than just simple clustering program. Here i
 4. `preprocessing/Clustering.ipynb` - main jupyter notebook used to train and validate clustering model. Brief description of this process below.
 5. `preprocessing/clustering.db` - database handling optuna studies for multithread processing
 
-## Description of method
+## Algorithm description
 
 ### How does the algorithm work?
 The algorithm consists of some simple but effective steps:
@@ -58,6 +59,11 @@ Optimization process consisted of two steps:
  1. optimize P using the entire example dataset (7618 characters) - the plot of this optimization (adjusted rand index score depending on P)
  2. for P found in step one, optimize EPS using 5000 random characters from example dataset
 
-result are
-P = 3.54941880103127
-EPS = 1.0668941233212608
+Result of optimization process are:
+* __P__ = 3.54941880103127
+* __EPS__ = 1.0668941233212608
+
+### Computing time estimation
+Due to distance calculations in Minkowski space (non-Euclidean), whole process can take a while. For the input of __5000__ images,
+process should take about __6 minutes__ to evaluate.
+
