@@ -146,12 +146,11 @@ def time_mins(secs):
 
 
 def main():
-    start = time.time()
     input_filename = sys.argv[1]
     info("Input filename: ", input_filename)
     if input_filename == "random":
         input_filename = randomize_file(N)
-
+    start = time.time()
     data = inSRC(input_filename)
     data["clustering"] = make_clustering(data["path"])
     info("Generating output...")
