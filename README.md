@@ -65,7 +65,7 @@ As an output 2 files are generated:
 
 Due to distance calculations in Minkowski space (non-Euclidean), whole process can take a while.
 For the input of __5000__ images,
-process should take about __6-7 minutes__ to evaluate.
+process should take about __7-8 minutes__ to evaluate.
 
 ## How does the algorithm work?
 The algorithm has 2 hiperparameters:
