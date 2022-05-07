@@ -10,7 +10,7 @@ Project directory contains much more than just simple clustering program. Here i
 1. `optimization/` - directory documents the hiperparameter optimization process, it is just a part of the method description - you do __not__ need it to run main program. It's for you to see exactly, how hiperparameters were optimized
 2. `optimization/data/` - directory contains dataset of 7618 images of characters used for hiperparameter optimization.
 3. `optimization/data/@0CLUSTERING.csv` - file contains manual clustering of whole dataset used for examining different clusterings (it took about 12h to cluster the dataset by hand)
-4. `optimization/Clustering.ipynb` - jupyter notebook containing __all__ commands invoked during hiperparameter optimization process
+4. `optimization/Clustering.ipynb` - jupyter notebook containing __all__ commands invoked during hiperparameter optimization process and results
 5. `optimization/clustering.db` - database handling multithread processing
 6. `optimization/plots/` - directory contains visualization of optimization process
 7. `install.sh` - script creates virtual environment and installs libraries
@@ -113,7 +113,7 @@ In other words:
 > 2. Take EPS that allows us to get the highest average score of clustering of __randomly chosen 5000-element subset__ with Q fixed on value from previous step.
 
 You can see optimization plots of step 1. and step 2. in files
-`optimization/plots/plot_q.html` and `optimization/plots/plot_eps.html` respectively.
+`optimization/plots/optimization_q.html` and `optimization/plots/optimization_eps.html` respectively.
 
 Someone may be surprised that we evaluate value of Q on the entire dataset, but value of EPS on randomly chosen 5000-element subsets.\
 The reason for this is:\
@@ -129,22 +129,22 @@ As computing the distances is the most expensive part of DBSCAN algorithm, we sa
 
 Result of optimization process are:
 
-| __P__   | __TODO__ |
-|---------|----------|
-| __EPS__ | __TODO__ |
+| __P__   | __3.5779679634436112__ |
+|---------|------------------------|
+| __EPS__ | __1.0694905187389605__ |
 
 which leads to following average adjusted rand index score on randomly chosen 5000-element subset of example dataset:
 
-| __adjusted RDI__ | __TODO__ |
-|------------------|----------|
+| __average adjusted rand index score__ | __0.9567071769677712__ |
+|---------------------------------------|------------------------|
 
-You can see a visualization of an example outcome for these values of P and EPS on 5000-element subset in file `optimization/plots/plot_example.html`.\
-You can see a visualization of correct clustering of this set in file `optimization/plots/plot_correct.html`.\
-You can also see visualization of manual clustering of the entire dataset in file `optimization/plots/plot_alldata.html`
+You can see a visualization of an example outcome for these values of P and EPS on 5000-element subset in file `optimization/plots/clustering_example.png`.\
+You can see a visualization of correct clustering of this set in file `optimization/plots/clustering_correct.png`.\
+You can also see visualization of manual clustering of the entire dataset in file `optimization/plots/clustering_all_data.png`
 
-RDI scores in this example are:
+rand index scores in this example are:
 
-| __unadjusted RDI__  | __TODO__ |
-|---------------------|----------|
-| __adjusted RDI__    | __TODO__ |
+| __rand index score__          | __0.9955691138227646__ |
+|-------------------------------|------------------------|
+| __adjusted rand index score__ | __0.9534206920986646__ |
 
