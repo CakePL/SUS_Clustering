@@ -74,7 +74,7 @@ def make_clustering(data):
 
 
 def randomize_file(n=5000):
-    src = "preprocessing/data/"
+    src = "optimization/data/"
     data = fnmatch.filter(os.listdir(src), '*.png')
     data = [src + data[i] for i in range(len(data))]
     random.shuffle(data)
@@ -135,8 +135,18 @@ def outHTML(data):
         res_file.write(final_html)
 
 
+def time_mins(secs):
+    mins = secs / 60
+    secs = int(secs) % 60
+    if mins < 10:
+        mins = "0" + str(secs)
+    if secs < 10:
+        secs = "0" + str(secs)
+    return f"{mins}:{secs}"
+
+
 def main():
-    start = time.time()  # ONLY FOT TEST!
+    start = time.time()
     input_filename = sys.argv[1]
     info("Input filename: ", input_filename)
     if input_filename == "random":
@@ -152,8 +162,8 @@ def main():
     info(f"Text results saved to file {TXT_RESULTS_FILENAME}")
     info(f"HTML results saved to file {HTML_RESULTS_FILENAME}")
     info("Done!")
-    stop = time.time()  # ONLY FOT TEST!
-    info(f"time: {stop - start}")  # ONLY FOT TEST!
+    stop = time.time()
+    info(f"Computing time: {time_mins(stop - start)} [min]")
 
 
 if __name__ == "__main__":

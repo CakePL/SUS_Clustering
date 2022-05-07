@@ -11,7 +11,7 @@ To install application (on Unix OS):
     1. `python3`
     2. `python3-pip`
     3. `python3-virualenv` - package should be installed not by using `pip`, but using OS package manager. <br />
-   For example, Debian/Ubuntu users should install `sudo apt install python3-virualenv`.
+       For example, Debian/Ubuntu users should install `sudo apt install python3-virualenv`.
 2. Run script `install.sh`. Script will automatically create virtual environment and install all needed libraries.
 
 ## How to run?
@@ -85,9 +85,9 @@ Optimization process consisted of two steps:
 
 Result of optimization process are:
 
-| __P__    | 3.54941880103127   |
-|----------|--------------------|
-| __EPS__  | 1.0668941233212608 |
+| __P__   | __3.54941880103127__   |
+|---------|------------------------|
+| __EPS__ | __1.0668941233212608__ |
 
 ### Computing time estimation
 
