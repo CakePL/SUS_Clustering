@@ -59,7 +59,7 @@ def preprocess_imgs(imgs):
 
 def make_clustering(data):
     info("Loading data...")
-    imgs = pd.Series([io.imread(path) for path in data.to_list()], index=data.index, dtype=object)
+    imgs = pd.Series([io.imread(path)[:, :, :3] for path in data.to_list()], index=data.index, dtype=object)
     info("Data loaded")
 
     info("Preprocessing images...")
@@ -130,6 +130,8 @@ def outHTML(data):
             clustering.append(" ".join(clust))
             clust = []
         clust.append(IMG % d.loc["path"])
+
+    clustering.append(" ".join(clust))
     final_html = HTML % "\n<hr />\n".join(clustering)
     with open(HTML_RESULTS_FILENAME, "w") as res_file:
         res_file.write(final_html)
